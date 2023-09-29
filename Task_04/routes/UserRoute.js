@@ -18,8 +18,8 @@ router.route('/updateUser/:id')
 router.route('/deleteUser/:id')
     .delete(userController.deleteUser);
 
-router.route('/paginateUser')
-    .get(userController.paginateUser)
+// router.route('/paginateUser')
+//     .get(userController.paginateUser)
 
 
 module.exports = router;

@@ -107,8 +107,16 @@
         "id": "114",
         "firstName": "Mayur",
         "lastName": "Kumar",
-        "email": "contact.mayur@gmail.com",
+        "email": "contact.mayur@techifysolutions.com",
         "phone": "9512464894",
         "address": "Ahmedabad"
+    },
+    {
+        "id": "115",
+        "firstName": "Hardik",
+        "lastName": "Patel",
+        "email": "contact.patel@gmail.com",
+        "phone": "9631587521",
+        "address": "Gujarat"
     }
-]
+]   

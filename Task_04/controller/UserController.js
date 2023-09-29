@@ -8,14 +8,18 @@ module.exports = {
             if (data !== undefined && data !== null && Object.keys(data).length > 0) {
                 const userData = await userService.addUser(data);
                 if (userData) {
-                    successHandler(res, 200, "User added successfully!", userData)
+                    successHandler(res, 200, "User added successfully!", userData);
                 }
             }
             else {
-                throw new Error("Form data missing!")
+                errorHandler(res, 400, 'user_addition_error', 'Form data missing');
             }
         } catch (error) {
-            errorHandler(res, 409, 'user_addition_error', error.message)
+            if (error.code === 500) {
+                errorHandler(res, 500, 'server_error', error.message);
+            } else {
+                errorHandler(res, 409, 'user_addition_error', error.message);
+            }
         }
     },
 
@@ -39,33 +43,74 @@ module.exports = {
 
     getUserWithId: async (req, res, next) => {
         try {
-
+            const { id } = req.params;
+            console.log(id);
+            if (id) {
+                const userData = await userService.fetchUserWithId(id);
+                if (userData) {
+                    successHandler(res, 200, "User fetched successfully!", userData);
+                }
+            } else {
+                errorHandler(res, 400, 'user_not_found', 'User id missing')
+            }
         } catch (error) {
-
+            if (error.code === 500) {
+                errorHandler(res, 500, 'server_error', error.message);
+            } else if (error.code === 'ENOENT') {
+                errorHandler(res, 404, 'file_not_found', error.message)
+            } else {
+                errorHandler(res, 400, 'user_not_found', error.message);
+            }
         }
     },
 
     updateUser: async (req, res, next) => {
         try {
-
+            const { id } = req.params;
+            const data = req.body;
+            if (id && (data !== undefined && data != null && Object.keys(data).length > 0)) {
+                const userData = await userService.modifyUser(id, data);
+                if (userData) {
+                    successHandler(res, 200, "User updated successfully!", userData);
+                }
+            } else {
+                errorHandler(res, 400, 'user_updation_error', 'Update data missing');
+            }
         } catch (error) {
-
+            if (error.code === 500) {
+                errorHandler(res, 500, 'server_error', error.message);
+            } else {
+                errorHandler(res, 400, 'user_updation_error', error.message);
+            }
         }
     },
 
     deleteUser: async (req, res, next) => {
         try {
-
+            const { id } = req.params;
+            console.log(id);
+            if (id) {
+                const userData = await userService.removeUser(id);
+                if (userData) {
+                    successHandler(res, 200, "User deleted successfully!", userData);
+                }
+            } else {
+                errorHandler(res, 400, 'user_deletion_error', 'User id missing')
+            }
         } catch (error) {
-
+            if (error.code === 500) {
+                errorHandler(res, 500, 'server_error', error.message);
+            } else {
+                errorHandler(res, 400, 'user_deletion_error', error.message);
+            }
         }
     },
 
-    paginateUser: async (req, res, next) => {
-        try {
+    // paginateUser: async (req, res, next) => {
+    //     try {
 
-        } catch (error) {
+    //     } catch (error) {
 
-        }
-    }
+    //     }
+    // }
 }
