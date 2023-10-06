@@ -44,6 +44,7 @@ module.exports = {
 
     getUser: async (req, res, next) => {
         try {
+            console.log(req.user);
             const userData = await userService.fetchUser();
             if (userData) {
                 successHandler(res, 200, "Users data fetched successfully!", userData);
