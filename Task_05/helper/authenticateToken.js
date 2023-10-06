@@ -18,12 +18,18 @@ const authenticateToken = async (req, res, next) => {
                 console.log(unrestrictedRoute);
                 console.log(req.path);
                 if (req.path === unrestrictedRoute.replace(':id', dynamicId)) {
+                    if (decoded.role === 'admin' || decoded.id == dynamicId) {
+                        req.user = decoded;
+                        next();
+                    } else {
+                        return errorHandler(res, 403, 'authenticate_token_error', 'Access denied: User can access his details only.')
+                    }
+                }
+                else if (decoded.role === 'admin') {
                     req.user = decoded;
                     next();
-                } else if (decoded.role === 'admin') {
-                    req.user = decoded;
-                    next();
-                } else {
+                } 
+                else {
                     return errorHandler(res, 403, 'authenticate_token_error', 'Access denied!');
                 }
             }

@@ -145,8 +145,9 @@ module.exports = {
             }
             if (user && (await bycrypt.compare(password, user.password))) {
                 console.log(user.role);
-                const tokenData = { email: email.toLowerCase(), role: user.role };
-                console.log(tokenData)
+                console.log(user.id);
+                const tokenData = { email: email.toLowerCase(), role: user.role, id: user.id };
+                console.log('TOKEN DATA', tokenData)
                 const tokenResult = await generateAccessToken(tokenData);
                 user.access_token = tokenResult.access_token;
                 console.log(user);

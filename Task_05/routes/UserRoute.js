@@ -2,28 +2,29 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controller/UserController');
 const { authenticateToken } = require('../helper/authenticateToken');
+const { logRequestBody } = require('../helper/logger');
 
 
 router.route('/postUser')
-    .post(authenticateToken, userController.postUser);
+    .post(logRequestBody, authenticateToken, userController.postUser);
 
 router.route('/getUser')
-    .get(authenticateToken, userController.getUser);
+    .get(logRequestBody, authenticateToken, userController.getUser);
 
 router.route('/getUser/:id')
-    .get(authenticateToken, userController.getUserWithId);
+    .get(logRequestBody, authenticateToken, userController.getUserWithId);
 
 router.route('/updateUser/:id')
-    .patch(authenticateToken, userController.updateUser);
+    .patch(logRequestBody, authenticateToken, userController.updateUser);
 
 router.route('/deleteUser/:id')
-    .delete(authenticateToken, userController.deleteUser);
+    .delete(logRequestBody, authenticateToken, userController.deleteUser);
 
 router.route('/login')
-    .post(userController.login);
+    .post(logRequestBody, userController.login);
 
 router.route('/paginateUser')
-    .get(authenticateToken, userController.paginateUser)
+    .get(logRequestBody, authenticateToken, userController.paginateUser)
 
 
 module.exports = router;
