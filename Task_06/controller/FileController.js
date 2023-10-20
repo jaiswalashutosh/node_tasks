@@ -5,9 +5,9 @@ const fileService = require('../services/FileService');
 module.exports = {
     postFile: async (req, res, next) => {
         try {
-            const fileRequestDaa = req.file;
-            console.log(fileRequestDaa);
-            const fileData = await fileService.uploadFile(fileRequestDaa);
+            const fileRequestData = req.file;
+            console.log(fileRequestData);
+            const fileData = await fileService.uploadFile(fileRequestData);
             if (fileData) {
                 successHandler(res, 200, "File uploaded successfully!", fileData);
             }

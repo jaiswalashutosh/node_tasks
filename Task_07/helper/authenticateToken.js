@@ -12,26 +12,24 @@ const authenticateToken = async (req, res, next) => {
         jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
             if (err) {
                 return errorHandler(res, 401, 'authenticate_token_error', 'Invalid token');
-            } else {
-                const dynamicId = req.params.id;
-                const unrestrictedRoute = '/getUser/:id';
-                console.log(unrestrictedRoute);
-                console.log(req.path);
-                if (req.path === unrestrictedRoute.replace(':id', dynamicId)) {
-                    if (decoded.role === 'admin' || decoded.id == dynamicId) {
-                        req.user = decoded;
-                        next();
-                    } else {
-                        return errorHandler(res, 403, 'authenticate_token_error', 'Access denied: User can access his details only.')
-                    }
-                }
-                else if (decoded.role === 'admin') {
-                    req.user = decoded;
+            }
+
+            req.user = decoded;
+
+            if (req.path === '/account-details' || req.path === '/uploadPicture' || req.path === '/forgot-password') {
+                if (decoded.role === 'user') {
                     next();
-                } 
-                else {
-                    return errorHandler(res, 403, 'authenticate_token_error', 'Access denied!');
+                } else {
+                    return errorHandler(res, 403, 'authenticate_token_error', 'Access denied: This route is for user use only.');
                 }
+            }
+            else if (decoded.role === 'admin') {
+                req.user = decoded;
+                console.log(req.user);
+                next();
+            }
+            else {
+                return errorHandler(res, 403, 'authenticate_token_error', 'Access denied!');
             }
         })
     } catch (error) {

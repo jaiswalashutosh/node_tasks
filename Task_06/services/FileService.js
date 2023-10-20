@@ -2,9 +2,9 @@ const File = require('../models/File');
 const emailService = require('../helper/emailService');
 
 module.exports = {
-    uploadFile: async (fileRequestDaa) => {
+    uploadFile: async (fileRequestData) => {
         try {
-            const { filename, size, mimetype } = fileRequestDaa;
+            const { filename, size, mimetype } = fileRequestData;
             console.log('Filename----', filename);
             console.log('File Size----', size);
             console.log('File Type----', mimetype);
@@ -14,7 +14,7 @@ module.exports = {
                 file_type: mimetype,
             });
             console.log('ServiceFile',file)
-            const emailInfo = await emailService.sendFileAsAttachment(fileRequestDaa);
+            const emailInfo = await emailService.sendFileAsAttachment(fileRequestData);
             return file;
         } catch (error) {
             console.log(`Could not upload file: ${error.message}`);
