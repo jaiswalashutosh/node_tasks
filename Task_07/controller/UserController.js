@@ -1,6 +1,7 @@
 const { successHandler, errorHandler } = require('../helper/responseHandler');
 const userService = require('../services/UserService');
 const User = require('../models/User');
+const Token = require('../models/Token')
 const jwt = require('jsonwebtoken');
 const emailService = require('../helper/emailService');
 const { Sequelize } = require('sequelize');
@@ -225,15 +226,19 @@ module.exports = {
                 throw new Error('Token is invalid or has expired');
             }
             // console.log(user.access_token);
+
+            const isPasswordMatch = await bycrypt.compare(newPassword, user.password);
+            if (isPasswordMatch) {
+                throw new Error('New password cannot be the same as the old password');
+            }
             const hashedPassword = await bycrypt.hash(newPassword, 10);
             user.password = hashedPassword;
             user.resetToken = null;
             user.resetTokenExpiry = null;
-            // const tokenData = { email: user.email.toLowerCase(), role: user.role, id: user.id };
-            // const tokenResult = await generateAccessToken(tokenData);
-            // user.access_token = tokenResult.access_token;
-            // console.log(user.access_token);
             await user.save();
+            await Token.destroy({
+                where: { user_id: user.id }
+            });
             successHandler(res, 200, "Password reset successful!", user);
             console.log(user)
             // successHandler(res, 200, "Password reset successful!", { access_token: tokenResult.access_token, user });

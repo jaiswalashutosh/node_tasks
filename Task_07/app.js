@@ -9,6 +9,7 @@ var PORT = process.env.PORT;
 const cors = require('cors');
 const winston = require('winston');
 const User = require('./models/User');
+const Token = require('./models/Token');
 
 winston.configure({
     transports: [new winston.transports.Console()],

@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Token = require('../models/Token');
 const { Op } = require('sequelize');
 const bycrypt = require('bcryptjs');
 const { generateAccessToken } = require('../helper/generateAccessToken');
@@ -188,6 +189,13 @@ module.exports = {
                 const tokenData = { email: email.toLowerCase(), role: user.role, id: user.id };
                 console.log('TOKEN DATA', tokenData);
                 const tokenResult = await generateAccessToken(tokenData);
+                // const accessTokenExpiry = new Date();
+                // accessTokenExpiry.setHours(accessTokenExpiry.getHours() + 1);
+                const token = await Token.create({
+                    user_id: user.id,
+                    access_token: tokenResult.access_token,
+                    // accessTokenExpiry: accessTokenExpiry,
+                })
                 user.access_token = tokenResult.access_token;
                 console.log(user);
                 return { access_token: tokenResult.access_token, user };

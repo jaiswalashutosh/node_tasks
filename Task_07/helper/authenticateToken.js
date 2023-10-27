@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const { successHandler, errorHandler } = require('../helper/responseHandler');
 require('dotenv').config();
+const Token = require('../models/Token')
+
 
 const authenticateToken = async (req, res, next) => {
     try {
@@ -9,18 +11,26 @@ const authenticateToken = async (req, res, next) => {
         if (!token || token == null) {
             return errorHandler(res, 401, 'authenticate_token_error', 'Token missing.');
         }
-        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        const tokenExists = await Token.findOne({
+            where: {
+                access_token: token,
+            }
+        });
+
+        if (!tokenExists) {
+            return errorHandler(res, 401, 'authenticate_token_error', 'Invalid token or token expired. Login again!');
+        }
+        jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
             if (err) {
                 return errorHandler(res, 401, 'authenticate_token_error', 'Invalid token');
             }
-
             req.user = decoded;
 
             if (req.path === '/account-details' || req.path === '/uploadPicture' || req.path === '/forgot-password') {
                 if (decoded.role === 'user') {
                     next();
                 } else {
-                    return errorHandler(res, 403, 'authenticate_token_error', 'Access denied: This route is for user use only.');
+                    return errorHandler(res, 403, 'authenticate_token_error', 'Access denied: This route is for user user only.');
                 }
             }
             else if (decoded.role === 'admin') {

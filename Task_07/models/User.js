@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/connection');
+const Token = require('./Token');
 
 const User = sequelize.define('User', {
     id: {
@@ -62,5 +63,9 @@ const User = sequelize.define('User', {
     tableName: 'users_profile',
     timestamps: true,
 });
+
+User.hasMany(Token, {
+    foreignKey: 'user_id',
+})
 
 module.exports = User;
